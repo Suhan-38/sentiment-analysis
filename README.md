@@ -63,6 +63,10 @@ This will:
 To run the web application:
 
 ```bash
+# First time only: Train the model (this will happen automatically if needed)
+python train_model.py
+
+# Run the web application
 python app.py
 ```
 
@@ -76,6 +80,8 @@ The web application allows you to:
 2. View the predicted sentiment with confidence score
 3. See interactive visualizations of the analysis results
 4. Analyze multiple texts in a user-friendly interface
+
+**Note**: The model is pre-trained and saved, so you don't need to retrain it each time you run the application. The training data includes NLTK movie reviews and custom examples for better accuracy.
 
 ## Visualizations
 
