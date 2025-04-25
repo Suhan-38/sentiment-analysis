@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Analysis Results</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+        }
+        .header-section {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 20px 20px;
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 6px 10px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: none;
+            margin-bottom: 2rem;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.12);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 24px;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5a0cb0 0%, #1565e0 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(37, 117, 252, 0.3);
+        }
+        .sentiment-badge {
+            font-size: 1.2rem;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        .positive {
+            background-color: #28a745;
+            color: white;
+        }
+        .negative {
+            background-color: #dc3545;
+            color: white;
+        }
+        .visualization-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        .confidence-meter {
+            height: 10px;
+            border-radius: 5px;
+            margin: 1rem 0;
+            background-color: #e9ecef;
+        }
+        .confidence-value {
+            height: 100%;
+            border-radius: 5px;
+        }
+        .positive-meter {
+            background-color: #28a745;
+        }
+        .negative-meter {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="header-section text-center">
+        <div class="container">
+            <h1 class="display-5 fw-bold mb-3">Sentiment Analysis Results</h1>
+            <a href="/" class="btn btn-light">Analyze Another Text</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Results Summary -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-10">
+                <div class="card p-4">
+                    <h2 class="card-title text-center mb-4">Analysis Summary</h2>
+                    
+                    <div class="text-center">
+                        <span class="sentiment-badge {{ sentiment }}">{{ sentiment|capitalize }}</span>
+                        <h3>Confidence: {{ confidence }}</h3>
+                        <div class="confidence-meter">
+                            <div class="confidence-value {{ sentiment }}-meter" style="width: {{ confidence|float * 100 }}%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h4>Analyzed Text:</h4>
+                        <div class="p-3 bg-light rounded">
+                            <p>{{ text }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visualizations -->
+        <h2 class="text-center mb-4">Visualizations</h2>
+        
+        <div class="row">
+            <!-- Word Cloud -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 p-4">
+                    <h3 class="card-title text-center mb-3">{{ sentiment|capitalize }} Sentiment Word Cloud</h3>
+                    <img src="data:image/png;base64,{{ wordcloud_img }}" alt="Word Cloud" class="visualization-img">
+                    <p class="text-center">The most common words in {{ sentiment }} sentiment texts</p>
+                </div>
+            </div>
+            
+            <!-- Top Words -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 p-4">
+                    <h3 class="card-title text-center mb-3">Top Words for {{ sentiment|capitalize }} Sentiment</h3>
+                    <img src="data:image/png;base64,{{ top_words_img }}" alt="Top Words" class="visualization-img">
+                    <p class="text-center">Words that strongly indicate {{ sentiment }} sentiment</p>
+                </div>
+            </div>
+            
+            <!-- Confusion Matrix -->
+            <div class="col-md-12 mb-4">
+                <div class="card p-4">
+                    <h3 class="card-title text-center mb-3">Model Performance</h3>
+                    <div class="row">
+                        <div class="col-md-8 mx-auto">
+                            <img src="data:image/png;base64,{{ conf_matrix_img }}" alt="Confusion Matrix" class="visualization-img">
+                        </div>
+                    </div>
+                    <p class="text-center">Confusion matrix showing the model's prediction accuracy</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Explanation -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card p-4">
+                    <h3 class="card-title text-center mb-3">What Does This Mean?</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <h4>Sentiment Analysis</h4>
+                            <p>Our model has analyzed your text and determined it has a <strong>{{ sentiment }}</strong> sentiment with {{ confidence }} confidence. This means the text generally expresses {{ "positive feelings or opinions" if sentiment == "positive" else "negative feelings or opinions" }}.</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h4>Key Words</h4>
+                            <p>The visualizations show which words in your text contributed most to the {{ sentiment }} sentiment classification. The word cloud displays the most common words, while the bar chart shows the words with the strongest {{ sentiment }} sentiment indicators.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mb-5">
+            <a href="/" class="btn btn-primary btn-lg">Analyze Another Text</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center">
+        <div class="container">
+            <p>© 2025 Sentiment Analysis Dashboard. All rights reserved.</p>
+            <p>Created by Suhan-38</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

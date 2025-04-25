@@ -1,6 +1,6 @@
-# Sentiment Analysis Visualizations
+# Sentiment Analysis Web Application
 
-This project performs sentiment analysis on social media text and generates various visualizations to help understand the model and data. The visualizations are designed to be viewed directly in VSCode without requiring a web browser.
+This project performs sentiment analysis on social media text and generates various visualizations to help understand the model and data. It includes both a script version for viewing visualizations in VSCode and a web application for interactive analysis.
 
 ## Project Overview
 
@@ -9,6 +9,7 @@ The project includes:
 - Text preprocessing for social media content
 - Visualization of model performance and key features
 - Word clouds for positive and negative sentiments
+- A web application for interactive sentiment analysis
 
 ## Getting Started
 
@@ -30,7 +31,7 @@ To run this project, you need:
 
 2. **Install required packages**:
    ```bash
-   pip install numpy pandas matplotlib seaborn scikit-learn nltk wordcloud
+   pip install -r requirements.txt
    ```
 
 3. **Download NLTK resources** (this will happen automatically when you run the script, but you can also do it manually):
@@ -43,7 +44,9 @@ To run this project, you need:
 
 ### Running the Project
 
-To generate all visualizations:
+#### Script Version
+
+To generate all visualizations using the script version:
 
 ```bash
 python script.py
@@ -54,6 +57,25 @@ This will:
 2. Train a Naive Bayes sentiment analysis model
 3. Generate all visualizations in the `visualizations` folder
 4. Display the model's accuracy and classification report in the console
+
+#### Web Application
+
+To run the web application:
+
+```bash
+python app.py
+```
+
+Then open your browser and navigate to:
+```
+http://127.0.0.1:5000/
+```
+
+The web application allows you to:
+1. Enter any text for sentiment analysis
+2. View the predicted sentiment with confidence score
+3. See interactive visualizations of the analysis results
+4. Analyze multiple texts in a user-friendly interface
 
 ## Visualizations
 
@@ -83,11 +105,19 @@ All visualizations are saved in the `visualizations` folder:
 
 ## Customizing the Project
 
+### Script Version
 You can modify the `script.py` file to:
 - Add your own dataset by changing the `data` dictionary
 - Adjust the preprocessing steps in the `preprocess_social_media_text` function
 - Change visualization parameters like colors, sizes, and styles
 - Save visualizations in different formats or locations
+
+### Web Application
+You can customize the web application by:
+- Modifying the HTML templates in the `templates` folder to change the UI
+- Adjusting the Flask routes in `app.py` to add new features
+- Changing the visualization styles in the Python code
+- Adding new types of analysis or visualizations
 
 ## Troubleshooting
 
@@ -98,6 +128,8 @@ Common issues:
 2. **Visualization Not Showing**: If visualizations don't appear when running the script, check that matplotlib is properly configured for your environment.
 
 3. **Package Not Found**: If you get "module not found" errors, ensure you've installed all required packages listed in the Installation section.
+
+4. **Web Application Issues**: If the Flask application doesn't start, check that you have Flask installed and that port 5000 is not in use by another application.
 
 ## License
 
